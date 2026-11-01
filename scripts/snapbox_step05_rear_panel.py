@@ -1,7 +1,10 @@
-# 五件式弹卡收纳盒 - 步骤5 后盖板
-# 后壁 Y∈[177.8,180]，X∈[2.2,257.8]，Z∈[10.2,160]；3底榫(直榫)；插入卡紧；固定卡槽；散热格栅；顶部出线槽
+# 五件式弹卡收纳盒 - 步骤5 后盖板（实心普通板）
+# 后壁 Y∈[177.8,180]，X∈[2.2,257.8]，Z∈[10.2,160]；3底榫(直榫)；插入卡紧；固定卡槽；不设格栅/出线槽(参考图非镂空)
 design = adsk.fusion.Design.cast(adsk.core.Application.get().activeProduct)
 root = design.rootComponent
+# 若已存在旧版后盖板则删除（幂等重跑）
+for b in [b for b in root.bRepBodies if b.name == '05_后盖板']:
+    b.deleteMe()
 BoxL, BoxW, BoxH = 260.0, 180.0, 160.0
 WallT, FloorT = 2.2, 2.2
 RimH, TenonD, TenonW, Gap = 8.0, 6.0, 12.0, 0.2
@@ -67,16 +70,7 @@ for cz in [48.0, 118.0]:
     world_rect_xz(sk, YP0+WallT/2, BoxL-14.0, cz, BoxL-8.0, cz+4.0)
 through_cut('05_固定卡槽_4个', sk, rear, 2.5)
 
-# --- 散热格栅：5条竖向贯穿Y的槽 ---
-sk = root.sketches.add(offset_xz(YP0+WallT/2, '05_格栅平面_Y178.9')); sk.name = '05_后盖板格栅草图'
-for gx in [70.0, 110.0, 130.0, 150.0, 190.0]:
-    world_rect_xz(sk, YP0+WallT/2, gx-2.0, 122.0, gx+2.0, 150.0)
-through_cut('05_散热格栅_5条', sk, rear, 2.5)
-
-# --- 顶部出线槽：顶缘中央缺口 ---
-sk = root.sketches.add(offset_xz(YP0+WallT/2, '05_出线槽平面_Y178.9')); sk.name = '05_后盖板出线槽草图'
-world_rect_xz(sk, YP0+WallT/2, 128.0, 155.0, 132.0, BoxH+3.0)
-through_cut('05_顶部出线槽', sk, rear, 2.5)
+# 注：后盖板为实心普通板（参考图非镂空），仅保留底榫/插入卡紧/固定卡槽，不设格栅与出线槽
 
 non_manifold = sum(1 for e in rear.edges if e.faces.count > 2)
 box = rear.boundingBox
