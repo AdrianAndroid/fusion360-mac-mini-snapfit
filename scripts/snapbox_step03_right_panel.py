@@ -1,7 +1,7 @@
 # 五件式弹卡收纳盒 - 步骤3 右侧板（左侧镜像，X∈[257.8,260]）
 design = adsk.fusion.Design.cast(adsk.core.Application.get().activeProduct)
 root = design.rootComponent
-BoxL, BoxW, BoxH = 260.0, 180.0, 160.0
+BoxL, BoxW, BoxH = 300.0, 210.0, 210.0
 WallT, FloorT = 2.2, 2.2
 RimH, TenonD, TenonW, Gap = 8.0, 6.0, 12.0, 0.2
 XP0 = BoxL - WallT   # 257.8
@@ -66,7 +66,7 @@ def offset_xy(z, name):
 # --- 主体+底榫：YZ草图(X=257.8)，拉伸+X 2.2 ---
 sk = root.sketches.add(offset_yz(XP0, '03_右侧板主体平面_X257.8')); sk.name = '03_右侧板主体草图'
 world_rect_yz(sk, XP0, 0, FloorT+RimH, BoxW, BoxH)
-for cy in [30.0, 90.0, 150.0]:
+for cy in [40.0, 105.0, 170.0]:
     world_rect_yz(sk, XP0, cy-TenonW/2, FloorT+RimH-TenonD, cy+TenonW/2, FloorT+RimH)
 one_side('03_右侧板主体+底榫', sk, 'x', True, WallT,
          adsk.fusion.FeatureOperations.NewBodyFeatureOperation)
@@ -74,20 +74,24 @@ right = next(b for b in root.bRepBodies if b.name not in ('01_底座总成', '02
 right.name = '03_右侧板'
 
 # --- 弹性卡钩：前后缘各2个，向外凸5mm，重叠1mm ---
-sk = root.sketches.add(offset_yz(XP0, '03_右侧板卡钩平面_X257.8')); sk.name = '03_右侧板卡钩草图'
-for cz in [48.0, 118.0]:
+hook_z = [70.0, 160.0]
+sk = root.sketches.add(offset_yz(XP0, '03_右侧板卡钩平面_X297.8')); sk.name = '03_右侧板卡钩草图'
+for cz in hook_z:
     world_rect_yz(sk, XP0, -6.0, cz, 1.0, cz+4.0)      # 前缘钩
     world_rect_yz(sk, XP0, BoxW-1.0, cz, BoxW+6.0, cz+4.0)  # 后缘钩
 one_side('03_右侧板弹性卡钩_4个', sk, 'x', True, WallT,
          adsk.fusion.FeatureOperations.JoinFeatureOperation, right)
 
-# --- 拎榫：外凸把手法兰(X259..272)+贯通孔 ---
-sk = root.sketches.add(offset_xy(136.0, '03_拎榫法兰底_Z136')); sk.name = '03_拎榫法兰草图'
-world_rect_xy(sk, 136.0, 259.0, 58.0, 272.0, 122.0)   # X 259..272(重叠到260), Y58..122
-one_side('03_拎榫法兰_Z136..156', sk, 'z', True, 20.0,
+# --- 拎榫：外凸把手法兰(X299..312)+贯通孔 ---
+fl_z0 = BoxH - 24.0      # 186
+fl_y0 = BoxW/2 - 32.0    # 73
+fl_y1 = BoxW/2 + 32.0    # 137
+sk = root.sketches.add(offset_xy(fl_z0, '03_拎榫法兰底')); sk.name = '03_拎榫法兰草图'
+world_rect_xy(sk, fl_z0, BoxL-1.0, fl_y0, BoxL+12.0, fl_y1)   # X 299..312(重叠到300), Y73..137
+one_side('03_拎榫法兰', sk, 'z', True, 20.0,
          adsk.fusion.FeatureOperations.JoinFeatureOperation, right)
-sk = root.sketches.add(offset_yz(XP0+WallT/2, '03_拎榫孔平面_X258.9')); sk.name = '03_拎榫孔草图'
-world_circle_yz(sk, XP0+WallT/2, 90.0, 145.0, 7.0)
+sk = root.sketches.add(offset_yz(XP0+WallT/2, '03_拎榫孔平面_X298.9')); sk.name = '03_拎榫孔草图'
+world_circle_yz(sk, XP0+WallT/2, BoxW/2, fl_z0+10.0, 7.0)
 through_cut('03_拎榫贯通孔_r7', sk, right, 16.0)
 
 non_manifold = sum(1 for e in right.edges if e.faces.count > 2)

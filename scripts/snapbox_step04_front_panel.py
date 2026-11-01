@@ -2,7 +2,7 @@
 # 前壁 Y∈[0,2.2]，X∈[2.2,257.8]，Z∈[10.2,160]；3底榫(直榫)；推入卡紧；左右缘固定卡槽
 design = adsk.fusion.Design.cast(adsk.core.Application.get().activeProduct)
 root = design.rootComponent
-BoxL, BoxW, BoxH = 260.0, 180.0, 160.0
+BoxL, BoxW, BoxH = 300.0, 210.0, 210.0
 WallT, FloorT = 2.2, 2.2
 RimH, TenonD, TenonW, Gap = 8.0, 6.0, 12.0, 0.2
 
@@ -51,9 +51,9 @@ def offset_xz(y, name):
 # --- 主体+底榫+推入卡紧：XZ草图(Y=0)，拉伸+Y 2.2 ---
 sk = root.sketches.add(root.xZConstructionPlane); sk.name = '04_前盖板主体草图'
 world_rect_xz(sk, 0, WallT, FloorT+RimH, BoxL-WallT, BoxH)   # 板身 X2.2..257.8 Z10.2..160
-for cx in [50.0, 130.0, 210.0]:                               # 底榫(直榫) X±6 Z4.2..10.2
+for cx in [60.0, 150.0, 240.0]:                               # 底榫(直榫) X±6 Z4.2..10.2
     world_rect_xz(sk, 0, cx-TenonW/2, FloorT+RimH-TenonD, cx+TenonW/2, FloorT+RimH)
-world_rect_xz(sk, 0, 118.0, 8.2, 142.0, 10.5)                  # 推入卡紧 下凸(重叠0.3)
+world_rect_xz(sk, 0, BoxL/2-12.0, 8.2, BoxL/2+12.0, 10.5)     # 推入卡紧 下凸 X138..162(重叠0.3)
 one_side('04_前盖板主体+底榫+推入卡紧', sk, 'y', True, WallT,
          adsk.fusion.FeatureOperations.NewBodyFeatureOperation)
 front = next(b for b in root.bRepBodies if b.name not in ('01_底座总成', '02_左侧板', '03_右侧板'))
@@ -61,7 +61,7 @@ front.name = '04_前盖板'
 
 # --- 固定卡槽：左右缘各2个贯穿Y的槽(承接侧板弹性卡钩) ---
 sk = root.sketches.add(offset_xz(WallT/2, '04_固定卡槽平面_Y1.1')); sk.name = '04_前盖板固定卡槽草图'
-for cz in [48.0, 118.0]:
+for cz in [70.0, 160.0]:
     world_rect_xz(sk, WallT/2, 8.0, cz, 14.0, cz+4.0)         # 左缘槽
     world_rect_xz(sk, WallT/2, BoxL-14.0, cz, BoxL-8.0, cz+4.0)  # 右缘槽
 through_cut('04_固定卡槽_4个', sk, front, 2.5)

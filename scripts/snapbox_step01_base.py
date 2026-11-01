@@ -2,7 +2,7 @@
 # 单位 mm；原点=底座外左下前角；X长260 Y深180 Z高160；顶面开口Z=160
 design = adsk.fusion.Design.cast(adsk.core.Application.get().activeProduct)
 root = design.rootComponent
-BoxL, BoxW, BoxH = 260.0, 180.0, 160.0
+BoxL, BoxW, BoxH = 300.0, 210.0, 210.0
 WallT, FloorT = 2.2, 2.2
 RimH, TenonD, TenonW, Gap = 8.0, 6.0, 12.0, 0.2
 if root.bRepBodies.count != 0:
@@ -76,8 +76,8 @@ one_side('01_支撑脚_高5mm', sk, 'z', True, 5.0,
 
 # --- 4) 承榫沿榫槽（从沿底面Z=2.2向上整段切除8mm），单边间隙0.2 ---
 slot_w = TenonW + 2*Gap  # 12.4
-tenon_y = [30.0, 90.0, 150.0]
-tenon_x = [50.0, 130.0, 210.0]
+tenon_y = [40.0, 105.0, 170.0]   # Y向底榫位(左右缘槽)，按210宽均匀
+tenon_x = [60.0, 150.0, 240.0]   # X向底榫位(前后缘槽)，按300长均匀
 sk = root.sketches.add(offset_xy(FloorT, '01_承榫沿底面_Z2.2_榫槽')); sk.name = '01_承榫沿榫槽草图'
 for cy in tenon_y:
     world_rect_xy(sk, FloorT, 0, cy-slot_w/2, WallT, cy+slot_w/2)                    # 左沿

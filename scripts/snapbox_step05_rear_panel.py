@@ -5,7 +5,7 @@ root = design.rootComponent
 # 若已存在旧版后盖板则删除（幂等重跑）
 for b in [b for b in root.bRepBodies if b.name == '05_后盖板']:
     b.deleteMe()
-BoxL, BoxW, BoxH = 260.0, 180.0, 160.0
+BoxL, BoxW, BoxH = 300.0, 210.0, 210.0
 WallT, FloorT = 2.2, 2.2
 RimH, TenonD, TenonW, Gap = 8.0, 6.0, 12.0, 0.2
 YP0 = BoxW - WallT   # 177.8
@@ -52,20 +52,20 @@ def offset_xz(y, name):
     pi.setByOffset(root.xZConstructionPlane, adsk.core.ValueInput.createByString(f'{y} mm'))
     pl = root.constructionPlanes.add(pi); pl.name = name; return pl
 
-# --- 主体+底榫+插入卡紧：XZ草图(Y=177.8)，拉伸+Y 2.2 ---
-sk = root.sketches.add(offset_xz(YP0, '05_后盖板主体平面_Y177.8')); sk.name = '05_后盖板主体草图'
-world_rect_xz(sk, YP0, WallT, FloorT+RimH, BoxL-WallT, BoxH)   # 板身 X2.2..257.8 Z10.2..160
-for cx in [50.0, 130.0, 210.0]:
+# --- 主体+底榫+插入卡紧：XZ草图(Y=207.8)，拉伸+Y 2.2 ---
+sk = root.sketches.add(offset_xz(YP0, '05_后盖板主体平面_Y207.8')); sk.name = '05_后盖板主体草图'
+world_rect_xz(sk, YP0, WallT, FloorT+RimH, BoxL-WallT, BoxH)   # 板身 X2.2..297.8 Z10.2..210
+for cx in [60.0, 150.0, 240.0]:
     world_rect_xz(sk, YP0, cx-TenonW/2, FloorT+RimH-TenonD, cx+TenonW/2, FloorT+RimH)
-world_rect_xz(sk, YP0, 118.0, 8.2, 142.0, 10.5)                  # 插入卡紧 下凸(重叠0.3)
+world_rect_xz(sk, YP0, BoxL/2-12.0, 8.2, BoxL/2+12.0, 10.5)    # 插入卡紧 下凸 X138..162(重叠0.3)
 one_side('05_后盖板主体+底榫+插入卡紧', sk, 'y', True, WallT,
          adsk.fusion.FeatureOperations.NewBodyFeatureOperation)
 rear = next(b for b in root.bRepBodies if b.name not in ('01_底座总成', '02_左侧板', '03_右侧板', '04_前盖板'))
 rear.name = '05_后盖板'
 
 # --- 固定卡槽：左右缘各2个贯穿Y的槽 ---
-sk = root.sketches.add(offset_xz(YP0+WallT/2, '05_固定卡槽平面_Y178.9')); sk.name = '05_后盖板固定卡槽草图'
-for cz in [48.0, 118.0]:
+sk = root.sketches.add(offset_xz(YP0+WallT/2, '05_固定卡槽平面_Y208.9')); sk.name = '05_后盖板固定卡槽草图'
+for cz in [70.0, 160.0]:
     world_rect_xz(sk, YP0+WallT/2, 8.0, cz, 14.0, cz+4.0)
     world_rect_xz(sk, YP0+WallT/2, BoxL-14.0, cz, BoxL-8.0, cz+4.0)
 through_cut('05_固定卡槽_4个', sk, rear, 2.5)
